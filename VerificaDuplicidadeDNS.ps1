@@ -23,15 +23,22 @@ function VerificaEntradasDuplicadasNoDNS($zonename, $dchostname){
                     $newHST = $dnsItem.HostName;
                     $newIP = $dnsItem.RecordData.IPv4Address.IPAddressToString;
                     Add-Content $outFilePath "Encontrado irregularidade para $tempHST";
+                    $tableObj = @();
+                    $tableObj += [PSCustomObject]@{
+                        Hostname = $tempHST
+                        IP = $tempIP
+                    }
+                    $tableObj += [PSCustomObject]@{
+                        Hostname = $newHST
+                        IP = $newIP
+                    }
                     Add-Content $outFilePath "Duplicação: ";
                     Add-Content $outFilePath "Hostname: $tempHST IP: $tempIP";
                     Add-Content $outFilePath "Hostname: $newHST IP: $newIP";
                     Add-Content $outFilePath "";
                     Write-Host "Encontrado irregularidade para "$tempHST;
                     Write-Host "Duplicação: ";
-                    Write-Host "Hostname: "$tempHST "IP: "$tempIP;
-                    Write-Host "Hostname: "$dnsItem.HostName "IP: "$dnsItem.RecordData.IPv4Address.IPAddressToString;
-                    Write-Host "";
+                    $tableObj | FT -auto
                 }
             }
         }
@@ -74,3 +81,5 @@ function VerificaEntradasDuplicadasNoDNSReverso($zonename, $dchostname){
         }     
     }
 }
+
+VerificaEntradasDuplicadasNoDNS('cenibra.com.br','CNBBODC01')
